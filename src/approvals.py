@@ -9,6 +9,7 @@ implementing the same `Approver` interface.
 from __future__ import annotations
 
 import os
+import sys
 from typing import Protocol
 
 
@@ -17,9 +18,16 @@ class Approver(Protocol):
 
 
 class CLIApprover:
-    """Synchronous terminal prompt. Good for local dev."""
+    """Synchronous terminal prompt. Good for local dev.
+
+    Auto-denies in non-TTY contexts (Cloud Run Jobs, CI) to avoid hanging
+    on input(). Replace with a Slack/web approver for production.
+    """
 
     def ask(self, action: str, context: str) -> bool:
+        if not sys.stdin.isatty():
+            print(f"[approval auto-denied: no TTY] {action}", file=sys.stderr)
+            return False
         print("\n" + "=" * 60)
         print("APPROVAL NEEDED")
         print("=" * 60)

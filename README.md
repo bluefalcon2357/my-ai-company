@@ -95,6 +95,11 @@ src/
 - No real money, email, or production systems are wired up — every
   external action lives behind a `REQUIRES_APPROVAL:` flag for now.
 
+## Deploying
+
+See [`deploy.md`](./deploy.md) for the GCP Cloud Run Jobs runbook
+(`Dockerfile` + `cloudbuild.yaml` are wired up).
+
 ## Costs
 
 Default model assignment: Opus 4.7 for the CEO, Sonnet 4.6 for departments.
