@@ -95,6 +95,27 @@ src/
 - No real money, email, or production systems are wired up — every
   external action lives behind a `REQUIRES_APPROVAL:` flag for now.
 
+## CrewAI variant (parallel implementation)
+
+A second implementation of the same CEO + 5 departments topology lives in
+`src_crewai/`, built on the [CrewAI](https://github.com/crewAIInc/crewAI)
+framework. The two share the same role prompts (`company/agents/*.md`) so
+you can compare them on identical inputs.
+
+```bash
+# Hand-built version
+python -m src.main "Draft a launch plan for our v1 developer product"
+
+# CrewAI version (same goal, different orchestrator)
+python -m src_crewai.main "Draft a launch plan for our v1 developer product"
+```
+
+Phase 1 (current): orchestration only — hierarchical delegation, no
+memory, no approval gate, no real tools. The hand-built version remains
+the reference implementation; CrewAI is an experiment to evaluate
+whether the framework abstractions are worth adopting. See the comments
+in `src_crewai/crew.py` for the planned phases.
+
 ## Deploying
 
 See [`deploy.md`](./deploy.md) for the GCP Cloud Run Jobs runbook
