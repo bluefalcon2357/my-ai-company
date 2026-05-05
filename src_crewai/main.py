@@ -1,9 +1,9 @@
-"""Entry point. Run a goal through the CEO.
+"""CrewAI entry point. Parallel to src/main.py for side-by-side comparison.
 
 Usage:
-    python -m src.main "Plan the launch of our v1 product"   # CLI arg
-    GOAL="..." python -m src.main                            # env var (Cloud Run Jobs)
-    python -m src.main                                       # interactive REPL
+    python -m src_crewai.main "Plan the launch of our v1 product"   # CLI arg
+    GOAL="..." python -m src_crewai.main                            # env var
+    python -m src_crewai.main                                       # interactive REPL
 """
 
 from __future__ import annotations
@@ -13,27 +13,27 @@ import sys
 
 from dotenv import load_dotenv
 
-from .orchestrator import CEO
+from .crew import build_crew
 
 
 def main() -> None:
     load_dotenv()
-    ceo = CEO()
 
     goal_arg = " ".join(sys.argv[1:]).strip() if len(sys.argv) > 1 else ""
     goal_env = os.environ.get("GOAL", "").strip()
     goal = goal_arg or goal_env
 
+    crew = build_crew()
+
     if goal:
-        print(ceo.run(goal))
+        print(crew.kickoff(inputs={"goal": goal}))
         return
 
     if not sys.stdin.isatty():
-        # Non-interactive (e.g. Cloud Run Job) with no goal set — fail loudly.
         print("[error] no goal provided. Set GOAL env var or pass as argv.", file=sys.stderr)
         sys.exit(1)
 
-    print("Acme AI Co. — type a goal, or 'quit' to exit.")
+    print("Acme AI Co. (CrewAI) — type a goal, or 'quit' to exit.")
     while True:
         try:
             goal = input("\nowner> ").strip()
@@ -44,7 +44,7 @@ def main() -> None:
             return
         if not goal:
             continue
-        print("\n" + ceo.run(goal))
+        print("\n" + str(crew.kickoff(inputs={"goal": goal})))
 
 
 if __name__ == "__main__":

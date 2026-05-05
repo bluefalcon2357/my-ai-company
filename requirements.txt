@@ -1,2 +1,5 @@
 anthropic>=0.92.0
 python-dotenv>=1.0.0
+
+# Phase 1 of the CrewAI port (src_crewai/)
+crewai>=0.80,<2.0
